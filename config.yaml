@@ -1,0 +1,49 @@
+pdf:
+  input_dir: "./data/input_pdfs"
+  output_dir: "./data/renamed_pdfs"
+  failed_dir: "./data/failed_pdfs"
+
+invoice:
+  # 备注栏中常见订单号关键字。程序会先按关键字提取，失败后再从备注附近兜底提取长数字。
+  order_keywords:
+    - "订单号"
+    - "订单编号"
+    - "订单ID"
+    - "商户订单号"
+    - "交易订单号"
+    - "抖音订单号"
+  # 如果你的订单号长度固定，可以调整这里。
+  order_pattern: "[A-Za-z0-9_-]{8,40}"
+
+record:
+  path: "./data/invoice_records.csv"
+
+browser:
+  backend_url: "https://fxg.jinritemai.com/"
+  storage_state_path: "./browser_state/douyin_storage_state.json"
+  headless: false
+  slow_mo: 100
+  timeout_ms: 30000
+  # playwright install 下载失败时，可改用本机浏览器，例如：/usr/bin/google-chrome 或 /usr/bin/chromium-browser
+  executable_path: "/usr/bin/google-chrome"
+  # 也可使用 Playwright channel，例如 chrome / msedge。设置 executable_path 后优先使用 executable_path。
+  channel: ""
+
+# 抖音后台页面可能变化，建议首次 dry_run=true 调试选择器。
+# selector 支持 Playwright 文本选择器、CSS、XPath 等。
+douyin:
+  invoice_management_url: "https://fxg.jinritemai.com/ffa/morder/receipt/list?btm_ppre=a2427.b76571.c902327.d871297&btm_pre=a2427.b76571.c902327.d608306&btm_show_id=ba965cb8-0f77-44a3-b4b4-45ad5bfa930a"  # 如果知道发票管理直达 URL，可填这里，优先使用。
+  selectors:
+    funds_menu: "text=资金"
+    invoice_menu: "text=发票管理"
+    pending_tab: "text=待开票"
+    order_input: "input[placeholder*='订单'], input[placeholder*='订单号']"
+    search_button: "text=查询"
+    upload_button: "text=上传发票"
+    confirm_button: "text=确定"
+
+upload:
+  dry_run: true
+  retry_count: 2
+  pause_after_open: true
+  screenshot_dir: "./data/screenshots"

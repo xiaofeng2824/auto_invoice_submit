@@ -3,6 +3,20 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Local invoice data and browser login state
+data/input_pdfs/*
+data/renamed_pdfs/*
+data/failed_pdfs/*
+data/screenshots/*
+data/invoice_records.csv
+browser_state/*
+!data/input_pdfs/.gitkeep
+!data/renamed_pdfs/.gitkeep
+!data/failed_pdfs/.gitkeep
+!browser_state/.gitkeep
+
+.idea
+
 # C extensions
 *.so
 
