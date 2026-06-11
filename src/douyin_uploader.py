@@ -1,12 +1,21 @@
 from __future__ import annotations
 
 from pathlib import Path
+import time
 from typing import Any
 
-from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError, sync_playwright
+from playwright.sync_api import (
+    Page,
+    TimeoutError as PlaywrightTimeoutError,
+    sync_playwright,
+)
 
 from .config import resolve_path
 from .record_store import read_records, write_records
+
+
+class OrderNotFoundError(Exception):
+    """订单未搜索到，应跳过而非标记为失败。"""
 
 
 class DouyinUploader:
@@ -17,8 +26,12 @@ class DouyinUploader:
         self.upload_config = config.get("upload", {})
         self.selectors = self.douyin_config.get("selectors", {})
         self.record_path = resolve_path(config["record"]["path"])
-        self.storage_state_path = resolve_path(self.browser_config["storage_state_path"])
-        self.screenshot_dir = resolve_path(self.upload_config.get("screenshot_dir", "./data/screenshots"))
+        self.storage_state_path = resolve_path(
+            self.browser_config["storage_state_path"]
+        )
+        self.screenshot_dir = resolve_path(
+            self.upload_config.get("screenshot_dir", "./data/screenshots")
+        )
 
     def launch_browser(self, playwright, *, headless: bool):
         launch_kwargs: dict[str, Any] = {
@@ -39,8 +52,12 @@ class DouyinUploader:
             browser = self.launch_browser(playwright, headless=False)
             context = browser.new_context()
             page = context.new_page()
-            page.goto(self.browser_config.get("backend_url", "https://fxg.jinritemai.com/"))
-            print("请在打开的浏览器中完成抖音后台登录。登录完成并确认进入后台后，回到终端按 Enter 保存登录状态。")
+            page.goto(
+                self.browser_config.get("backend_url", "https://fxg.jinritemai.com/")
+            )
+            print(
+                "请在打开的浏览器中完成抖音后台登录。登录完成并确认进入后台后，回到终端按 Enter 保存登录状态。"
+            )
             input()
             context.storage_state(path=str(self.storage_state_path))
             browser.close()
@@ -52,7 +69,11 @@ class DouyinUploader:
             print(f"未找到台账记录: {self.record_path}")
             return
 
-        targets = [record for record in records if record.get("status") == "parsed" and record.get("uploaded") != "yes"]
+        targets = [
+            record
+            for record in records
+            if record.get("status") == "parsed" and record.get("uploaded") != "yes"
+        ]
         if not targets:
             print("没有需要上传的发票。")
             return
@@ -70,21 +91,31 @@ class DouyinUploader:
                 context_kwargs["storage_state"] = str(self.storage_state_path)
             context = browser.new_context(**context_kwargs)
             page = context.new_page()
-            page.set_default_timeout(self.browser_config.get("timeout_ms", 30000))
+            page.set_default_timeout(self.browser_config.get("timeout_ms", 30000000))
 
             self.open_invoice_page(page)
             if self.upload_config.get("pause_after_open", True):
-                print("已打开后台页面。请确认页面已登录且位于发票管理相关页面，然后回到终端按 Enter 继续。")
+                print(
+                    "已打开后台页面。请确认页面已登录且位于发票管理相关页面，然后回到终端按 Enter 继续。"
+                )
                 input()
 
             for record in targets:
                 try:
                     self.upload_one(page, record)
                     record["uploaded"] = "yes"
-                    record["message"] = "上传成功" if not self.upload_config.get("dry_run", True) else "dry_run：已完成筛选，未实际上传"
+                    record["message"] = (
+                        "上传成功"
+                        if not self.upload_config.get("dry_run", True)
+                        else "dry_run：已完成筛选，未实际上传"
+                    )
+                except OrderNotFoundError:
+                    record["uploaded"] = "skipped"
+                    record["message"] = "未搜到对应订单"
                 except Exception as exc:
                     record["uploaded"] = "failed"
                     record["message"] = f"上传失败: {exc}"
+                    print(f"上传失败: {exc}")
                     self.safe_screenshot(page, record.get("order_id", "unknown"))
                 finally:
                     write_records(self.record_path, records)
@@ -94,7 +125,10 @@ class DouyinUploader:
 
     def open_invoice_page(self, page: Page) -> None:
         direct_url = self.douyin_config.get("invoice_management_url")
-        page.goto(direct_url or self.browser_config.get("backend_url", "https://fxg.jinritemai.com/"))
+        page.goto(
+            direct_url
+            or self.browser_config.get("backend_url", "https://fxg.jinritemai.com/")
+        )
         page.wait_for_load_state("domcontentloaded")
         if direct_url:
             return
@@ -111,23 +145,102 @@ class DouyinUploader:
             raise FileNotFoundError(f"PDF 文件不存在: {pdf_path}")
 
         print(f"处理订单: {order_id}")
-        self.search_order(page, order_id)
+        if not self.search_order(page, order_id):
+            print(f"  [跳过] 未搜到订单 {order_id}，跳过")
+            raise OrderNotFoundError(f"未搜到订单 {order_id}")
 
         if self.upload_config.get("dry_run", True):
             print(f"dry_run=true，跳过实际上传: {pdf_path}")
             return
 
+        # 第一步：主页面点击"上传发票"，弹出子页面/弹窗
         upload_button = self.selectors.get("upload_button", "text=上传发票")
-        with page.expect_file_chooser() as chooser_info:
-            page.locator(upload_button).first.click()
-        chooser_info.value.set_files(str(pdf_path))
+        page.locator(upload_button).first.click()
+        print("  已点击主页面上传发票按钮，等待子页面...")
 
-        confirm_button = self.selectors.get("confirm_button")
-        if confirm_button:
-            self.click_if_present(page, confirm_button)
-        page.wait_for_load_state("networkidle")
+        # 第二步：在子页面上找到隐藏的 <input type="file">，直接注入文件
+        subpage_upload_btn = self.selectors.get(
+            "subpage_upload_button", "text=上传发票"
+        )
+        subpage_upload_locator = page.locator(subpage_upload_btn).first
+        subpage_upload_locator.wait_for(state="visible", timeout=10000)
+        print("  子页面已出现")
 
-    def search_order(self, page: Page, order_id: str) -> None:
+        # 直接找到隐藏的文件 input 元素注入文件，无需人工点击
+        file_input_selector = self.selectors.get(
+            "subpage_file_input", "input[type='file']"
+        )
+        file_input = page.locator(file_input_selector).first
+        file_input.wait_for(state="attached", timeout=5000)
+        file_input.set_input_files(str(pdf_path))
+        print(f"  已注入文件: {pdf_path.name}")
+
+
+        # 第三步：点击提交按钮
+        subpage_submit_btn = self.selectors.get(
+            "subpage_submit_button", "text=提交"
+        )
+        submit_locator = page.locator(subpage_submit_btn).first
+        submit_locator.wait_for(state="visible", timeout=10000)
+        submit_locator.click()
+        print("  已点击提交按钮")
+
+        # 第四步：处理确认弹窗
+        # 先尝试拦截浏览器原生 dialog（alert/confirm）
+        dialog_handled = False
+
+        def handle_dialog(dialog):
+            nonlocal dialog_handled
+            print(f"  检测到浏览器原生弹窗: {dialog.message}")
+            dialog.accept()
+            dialog_handled = True
+
+        page.on("dialog", handle_dialog)
+
+        # 给弹窗一点渲染时间
+        page.wait_for_timeout(1500)
+
+        if not dialog_handled:
+            # 等待确认按钮出现（给弹窗动画充足时间）
+            confirm_selectors = [
+                "button:has-text('确认')",
+                "button:has-text('确定')",
+                "button:has-text('提交')",
+                "[class*='btn']:has-text('确认')",
+                "[class*='btn']:has-text('确定')",
+            ]
+            confirm_btn = None
+            for sel in confirm_selectors:
+                try:
+                    loc = page.locator(sel).last
+                    loc.wait_for(state="visible", timeout=10000)
+                    confirm_btn = loc
+                    print(f"  找到确认按钮: {sel}")
+                    break
+                except PlaywrightTimeoutError:
+                    continue
+
+            if confirm_btn:
+                try:
+                    confirm_btn.click(timeout=5000)
+                except Exception:
+                    try:
+                        confirm_btn.click(force=True)
+                    except Exception:
+                        confirm_btn.evaluate("el => el.click()")
+                print("  已点击确认按钮")
+                dialog_handled = True
+            else:
+                print("  未找到确认按钮，截图排查...")
+                self.safe_screenshot(page, f"{order_id}_no_confirm_btn")
+
+        if dialog_handled:
+            page.wait_for_timeout(2000)
+            print("  确认弹窗已处理")
+
+
+    def search_order(self, page: Page, order_id: str) -> bool:
+        """搜索订单，返回 True 表示找到结果，False 表示未找到。"""
         pending_tab = self.selectors.get("pending_tab")
         if pending_tab:
             self.click_if_present(page, pending_tab)
@@ -135,12 +248,22 @@ class DouyinUploader:
         order_input = self.selectors.get("order_input", "input[placeholder*='订单']")
         input_locator = page.locator(order_input).first
         input_locator.wait_for(state="visible")
+        # 先清空再填入，避免残留上次搜索的内容
+        input_locator.clear()
         input_locator.fill(order_id)
 
         search_button = self.selectors.get("search_button", "text=查询")
         page.locator(search_button).first.click()
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(1000)
+
+        # 等搜索结果中出现当前订单号，比等"上传发票"更可靠
+        # 因为页面默认列表里可能已经有"上传发票"按钮，会误命中旧数据
+        try:
+            page.wait_for_selector(f"text={order_id}", timeout=10000)
+        except PlaywrightTimeoutError:
+            return False
+        page.wait_for_timeout(500)
+        return True
+        return True
 
     def click_if_present(self, page: Page, selector: str | None) -> bool:
         if not selector:
@@ -156,7 +279,12 @@ class DouyinUploader:
 
     def safe_screenshot(self, page: Page, order_id: str) -> None:
         try:
-            safe_order = "".join(char if char.isalnum() else "_" for char in order_id) or "unknown"
-            page.screenshot(path=str(self.screenshot_dir / f"{safe_order}.png"), full_page=True)
+            safe_order = (
+                "".join(char if char.isalnum() else "_" for char in order_id)
+                or "unknown"
+            )
+            page.screenshot(
+                path=str(self.screenshot_dir / f"{safe_order}.png"), full_page=True
+            )
         except Exception:
             pass

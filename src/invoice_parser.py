@@ -9,7 +9,7 @@ from typing import Any
 import fitz  # PyMuPDF
 
 from .config import resolve_path
-from .record_store import append_records
+from .record_store import read_records, write_records
 
 
 @dataclass
@@ -17,8 +17,25 @@ class InvoiceParseResult:
     source_file: Path
     copied_file: Path | None
     order_id: str
+    invoice_id: str
     status: str
     message: str
+
+
+def extract_invoice_id(filename: str) -> str | None:
+    """从文件名中提取发票 ID。
+
+    文件命名格式: dzfp_{发票ID}_{公司名}_{时间戳}.pdf
+    例如: dzfp_26317000002154252536_上海卓坤电子商务有限公司_20260611165624.pdf
+    """
+    match = re.search(r"dzfp_(\d+)", filename)
+    if match:
+        return match.group(1)
+    # 兜底：匹配文件名中第一个 18-20 位的长数字
+    fallback = re.search(r"(\d{18,20})", filename)
+    if fallback:
+        return fallback.group(1)
+    return None
 
 
 def extract_pdf_text(pdf_path: Path) -> str:
@@ -132,23 +149,25 @@ def copy_with_order_prefix(source: Path, output_dir: Path, order_id: str) -> Pat
 
 
 def parse_single_pdf(pdf_path: Path, output_dir: Path, failed_dir: Path, keywords: list[str], order_pattern: str) -> InvoiceParseResult:
+    invoice_id = extract_invoice_id(pdf_path.name) or ""
+
     try:
         text = extract_pdf_text(pdf_path)
     except Exception as exc:
         failed_dir.mkdir(parents=True, exist_ok=True)
         failed_copy = unique_destination(failed_dir / pdf_path.name)
         shutil.copy2(pdf_path, failed_copy)
-        return InvoiceParseResult(pdf_path, failed_copy, "", "failed", f"PDF 读取失败: {exc}")
+        return InvoiceParseResult(pdf_path, failed_copy, "", invoice_id, "failed", f"PDF 读取失败: {exc}")
 
     order_id = extract_order_id(text, keywords, order_pattern)
     if not order_id:
         failed_dir.mkdir(parents=True, exist_ok=True)
         failed_copy = unique_destination(failed_dir / pdf_path.name)
         shutil.copy2(pdf_path, failed_copy)
-        return InvoiceParseResult(pdf_path, failed_copy, "", "failed", "未识别到订单号")
+        return InvoiceParseResult(pdf_path, failed_copy, "", invoice_id, "failed", "未识别到订单号")
 
     copied_file = copy_with_order_prefix(pdf_path, output_dir, order_id)
-    return InvoiceParseResult(pdf_path, copied_file, order_id, "parsed", "已复制并添加订单号前缀")
+    return InvoiceParseResult(pdf_path, copied_file, order_id, invoice_id, "parsed", "已复制并添加订单号前缀")
 
 
 def parse_invoices(config: dict[str, Any]) -> list[InvoiceParseResult]:
@@ -163,23 +182,54 @@ def parse_invoices(config: dict[str, Any]) -> list[InvoiceParseResult]:
     output_dir.mkdir(parents=True, exist_ok=True)
     failed_dir.mkdir(parents=True, exist_ok=True)
 
+    # 读取已有记录，用发票 ID（invoice_id）做去重 key
+    # 文件可能已从 input_pdfs 移走，用 source_file 路径匹配不上
+    existing_records = read_records(record_path)
+    existing_map: dict[str, dict[str, str]] = {}
+    for rec in existing_records:
+        inv_id = rec.get("invoice_id", "")
+        if inv_id:
+            existing_map[inv_id] = rec
+
+    # 收集所有待处理的 PDF，跳过发票 ID 已存在且输出文件还在的
+    all_pdfs = sorted(input_dir.glob("*.pdf"))
+    new_pdfs: list[Path] = []
+    skipped = 0
+    for pdf_path in all_pdfs:
+        inv_id = extract_invoice_id(pdf_path.name) or ""
+        if inv_id and inv_id in existing_map:
+            prev = existing_map[inv_id]
+            if prev.get("status") in ("parsed", "failed"):
+                copied = prev.get("copied_file", "")
+                if copied and Path(copied).exists():
+                    print(f"  [跳过] 已处理: {pdf_path.name} → {Path(copied).name}")
+                    skipped += 1
+                    continue
+        new_pdfs.append(pdf_path)
+
+    if skipped:
+        print(f"共跳过 {skipped} 个已处理的文件")
+
+    # 处理新文件
     results: list[InvoiceParseResult] = []
-    for pdf_path in sorted(input_dir.glob("*.pdf")):
+    for pdf_path in new_pdfs:
         result = parse_single_pdf(pdf_path, output_dir, failed_dir, keywords, order_pattern)
         results.append(result)
 
-    append_records(
-        record_path,
-        [
-            {
-                "source_file": str(result.source_file),
-                "copied_file": str(result.copied_file or ""),
-                "order_id": result.order_id,
-                "status": result.status,
-                "message": result.message,
-                "uploaded": "no" if result.status == "parsed" else "",
-            }
-            for result in results
-        ],
-    )
+    # 合并记录：按 invoice_id 去重
+    for result in results:
+        key = result.invoice_id or str(result.source_file)
+        new_record = {
+            "source_file": str(result.source_file),
+            "copied_file": str(result.copied_file or ""),
+            "order_id": result.order_id,
+            "invoice_id": result.invoice_id,
+            "status": result.status,
+            "message": result.message,
+            "uploaded": "no" if result.status == "parsed" else "",
+        }
+        existing_map[key] = new_record
+
+    # 写回 CSV（去重后的完整记录）
+    write_records(record_path, list(existing_map.values()))
     return results

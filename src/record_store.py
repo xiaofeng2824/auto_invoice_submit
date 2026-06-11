@@ -8,6 +8,7 @@ FIELDNAMES = [
     "source_file",
     "copied_file",
     "order_id",
+    "invoice_id",
     "status",
     "message",
     "uploaded",
