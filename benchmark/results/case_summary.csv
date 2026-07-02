@@ -1,0 +1,11 @@
+test_id,category,test_name,opencode-go_ttft_ms,opencode-go_total_ms,opencode-go_tps,opencode-go_quality_pass,opencode-go_quality_score,deepseek-official_ttft_ms,deepseek-official_total_ms,deepseek-official_tps,deepseek-official_quality_pass,deepseek-official_quality_score
+simple_math,simple_qa,简单数学问答,3188.07,3230.07,23517.67,5/5,1.0,596.94,682.9,14.89,5/5,1.0
+simple_factual,simple_qa,简单事实问答,3002.43,3004.67,21325.85,5/5,1.0,631.56,787.32,7.67,5/5,1.0
+code_prime,code_gen,素数判断函数,4809.72,5336.45,564.6,0/5,0.2,914.76,1613.99,148.29,0/5,0.2
+code_sort,code_gen,快速排序实现,9283.87,12263.11,1965.49,2/5,0.4,639.2,1207.04,160.62,5/5,1.0
+reasoning_transitive,reasoning,传递性推理,2850.22,2851.85,39793.23,5/5,1.0,658.07,778.81,8.68,5/5,1.0
+reasoning_syllogism,reasoning,三段论推理,3358.57,3361.44,37691.09,5/5,1.0,707.67,835.27,8.32,5/5,1.0
+instruction_json,instruction,JSON格式约束,4490.13,4500.67,21011.23,5/5,1.0,577.47,744.04,42.96,5/5,1.0
+instruction_length,instruction,字数约束,0.0,13959.71,73.74,0/5,0.0,674.71,1004.23,27.67,0/5,0.3
+long_context,long_context,长文本信息检索,3734.64,3743.18,13448.24,5/5,1.0,573.89,709.23,23.84,5/5,1.0
+code_fizzbuzz,code_gen,FizzBuzz实现,6837.93,7325.1,791.97,5/5,1.0,688.58,1357.81,138.33,5/5,1.0

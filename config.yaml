@@ -1,5 +1,5 @@
 pdf:
-  input_dir: "./data/input_pdfs"
+  input_dir: "/home/charles/7.2"
   output_dir: "./data/renamed_pdfs"
   failed_dir: "./data/failed_pdfs"
 
@@ -24,9 +24,9 @@ browser:
   headless: false
   slow_mo: 100
   timeout_ms: 3000000
-  # playwright install 下载失败时，可改用本机浏览器，例如：/usr/bin/google-chrome 或 /usr/bin/chromium-browser
-  executable_path: "/usr/bin/google-chrome"
-  # 也可使用 Playwright channel，例如 chrome / msedge。设置 executable_path 后优先使用 executable_path。
+  # auto 会自动查找本机 Chrome / Edge / Chromium；找不到则回退到 Playwright 自带 Chromium。
+  executable_path: "auto"
+  # 也可手动指定 Playwright channel，例如 chrome / msedge。设置 executable_path 后优先使用 executable_path。
   channel: ""
 
 # 抖音后台页面可能变化，建议首次 dry_run=true 调试选择器。
@@ -50,6 +50,13 @@ douyin:
 
 upload:
   dry_run: false
-  retry_count: 2
+  # 上传失败后重试次数（含首次），每次重试会重新执行上传操作并复搜验证
+  retry_count: 3
   pause_after_open: false
   screenshot_dir: "./data/screenshots"
+  # 提交后复搜验证的最大等待预算（毫秒），命中即提前退出
+  verify_delay_ms: 3000
+  # 复搜轮询间隔（毫秒），每隔这段时间复搜一次直到订单消失或耗尽预算
+  verify_poll_interval_ms: 500
+  # 点击提交后等待确认按钮出现的最长时间（毫秒）
+  confirm_button_timeout_ms: 10000

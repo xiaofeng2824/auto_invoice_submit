@@ -59,6 +59,26 @@ douyin:
 
 ## 使用
 
+### 桌面 App
+
+安装依赖后可以直接启动桌面界面：
+
+```bash
+python desktop_app.py
+```
+
+界面提供：
+
+- 选择 PDF 文件夹
+- 登录并保存抖音后台登录态
+- 解析发票
+- 上传发票
+- 全流程执行
+- Dry-run 开关
+- 实时运行日志
+
+登录时程序会打开浏览器。你在浏览器里完成登录后，回到桌面窗口点击“保存登录状态”。
+
 ### 1. 放入 PDF
 
 把待处理发票放到：
@@ -132,3 +152,25 @@ python main.py run
 - `browser_state/` 保存登录态，不要提交或分享。
 - `data/` 目录下可能包含发票和订单信息，已加入 `.gitignore`。
 - 第一版没有 OCR，适合电子发票 PDF；如果 PDF 是扫描图片，可能识别不到订单号。
+
+## Windows exe 打包
+
+建议在 Windows 机器上打包：
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+playwright install chromium
+pip install pyinstaller
+pyinstaller --noconsole --onefile --name AutoInvoiceSubmit --add-data "config.yaml;." --collect-all playwright desktop_app.py
+```
+
+生成文件在：
+
+```text
+dist/AutoInvoiceSubmit.exe
+```
+
+如果用户电脑已安装 Chrome 或 Edge，程序会自动查找系统浏览器；找不到时会回退到 Playwright 自带 Chromium。
+首次启动时，如果 exe 同目录没有 `config.yaml`，程序会从内置文件复制一份出来。

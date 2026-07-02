@@ -1,0 +1,413 @@
+endpoint,test_id,category,test_name,run_index,success,error,ttft_ms,total_ms,generation_ms,input_tokens,output_tokens,tps,response_text,quality_passed,quality_score,quality_note
+opencode-go,simple_math,simple_qa,简单数学问答,0,True,,3809.72,3818.83,9.11,97,44,4830.39,4,True,1.0,命中关键词: 4
+opencode-go,simple_math,simple_qa,简单数学问答,1,True,,2538.49,2539.09,0.6,97,26,43005.85,4,True,1.0,命中关键词: 4
+opencode-go,simple_math,simple_qa,简单数学问答,2,True,,2853.71,2855.32,1.61,97,46,28580.59,4,True,1.0,命中关键词: 4
+opencode-go,simple_math,simple_qa,简单数学问答,3,True,,3487.37,3488.12,0.76,97,31,40984.58,4,True,1.0,命中关键词: 4
+opencode-go,simple_math,simple_qa,简单数学问答,4,True,,3251.07,3449.01,197.94,97,37,186.92,4,True,1.0,命中关键词: 4
+deepseek-official,simple_math,simple_qa,简单数学问答,0,True,,729.58,811.61,82.03,18,1,12.19,4,True,1.0,命中关键词: 4
+deepseek-official,simple_math,simple_qa,简单数学问答,1,True,,564.84,658.16,93.32,18,1,10.72,4,True,1.0,命中关键词: 4
+deepseek-official,simple_math,simple_qa,简单数学问答,2,True,,564.76,689.79,125.03,18,1,8.0,4,True,1.0,命中关键词: 4
+deepseek-official,simple_math,simple_qa,简单数学问答,3,True,,547.83,647.39,99.56,18,1,10.04,4,True,1.0,命中关键词: 4
+deepseek-official,simple_math,simple_qa,简单数学问答,4,True,,577.68,607.54,29.86,18,1,33.49,4,True,1.0,命中关键词: 4
+opencode-go,simple_factual,simple_qa,简单事实问答,0,True,,2221.37,2223.76,2.38,94,24,10063.91,北京,True,1.0,命中关键词: 北京
+opencode-go,simple_factual,simple_qa,简单事实问答,1,True,,2519.13,2522.75,3.62,94,24,6637.08,北京,True,1.0,命中关键词: 北京
+opencode-go,simple_factual,simple_qa,简单事实问答,2,True,,3871.44,3874.12,2.68,94,38,14189.64,北京,True,1.0,命中关键词: 北京
+opencode-go,simple_factual,simple_qa,简单事实问答,3,True,,2643.1,2644.83,1.73,94,41,23670.22,北京,True,1.0,命中关键词: 北京
+opencode-go,simple_factual,simple_qa,简单事实问答,4,True,,3757.11,3757.88,0.77,94,40,52068.42,北京,True,1.0,命中关键词: 北京
+deepseek-official,simple_factual,simple_qa,简单事实问答,0,True,,640.45,792.36,151.91,15,1,6.58,北京,True,1.0,命中关键词: 北京
+deepseek-official,simple_factual,simple_qa,简单事实问答,1,True,,560.98,710.48,149.5,15,1,6.69,北京,True,1.0,命中关键词: 北京
+deepseek-official,simple_factual,simple_qa,简单事实问答,2,True,,799.78,1090.94,291.16,15,1,3.43,北京,True,1.0,命中关键词: 北京
+deepseek-official,simple_factual,simple_qa,简单事实问答,3,True,,516.58,617.89,101.32,15,1,9.87,北京,True,1.0,命中关键词: 北京
+deepseek-official,simple_factual,simple_qa,简单事实问答,4,True,,639.99,724.92,84.93,15,1,11.77,北京,True,1.0,命中关键词: 北京
+opencode-go,code_prime,code_gen,素数判断函数,0,True,,4152.18,4612.57,460.39,104,351,762.4,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+opencode-go,code_prime,code_gen,素数判断函数,1,True,,3273.36,4040.64,767.27,104,219,285.43,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+opencode-go,code_prime,code_gen,素数判断函数,2,True,,4222.84,4737.95,515.11,104,197,382.44,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+opencode-go,code_prime,code_gen,素数判断函数,3,True,,7981.62,8383.06,401.44,104,295,734.85,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 2
+    return True
+```",False,0.2,未定义 is_prime 函数
+opencode-go,code_prime,code_gen,素数判断函数,4,True,,4418.6,4908.05,489.45,104,322,657.88,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+deepseek-official,code_prime,code_gen,素数判断函数,0,True,,961.74,1849.63,887.9,25,102,114.88,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+deepseek-official,code_prime,code_gen,素数判断函数,1,True,,917.49,1555.78,638.29,25,102,159.8,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+deepseek-official,code_prime,code_gen,素数判断函数,2,True,,901.05,1520.98,619.93,25,102,164.54,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+deepseek-official,code_prime,code_gen,素数判断函数,3,True,,861.57,1529.5,667.93,25,102,152.71,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+deepseek-official,code_prime,code_gen,素数判断函数,4,True,,931.96,1614.06,682.1,25,102,149.54,"```python
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+```",False,0.2,未定义 is_prime 函数
+opencode-go,code_sort,code_gen,快速排序实现,0,True,,0.0,12141.52,12141.52,103,1024,84.34,,False,0.0,未评估（请求失败）
+opencode-go,code_sort,code_gen,快速排序实现,1,True,,0.0,14682.11,14682.11,103,1024,69.74,,False,0.0,未评估（请求失败）
+opencode-go,code_sort,code_gen,快速排序实现,2,True,,9928.59,10022.66,94.07,103,831,8833.72,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+opencode-go,code_sort,code_gen,快速排序实现,3,True,,8639.15,9414.12,774.96,103,598,771.65,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[0]
+    left = [x for x in arr[1:] if x <= pivot]
+    right = [x for x in arr[1:] if x > pivot]
+    return quicksort(left) + [pivot] + quicksort(right)
+```",True,1.0,排序正确
+opencode-go,code_sort,code_gen,快速排序实现,4,True,,0.0,15055.15,15055.15,103,1024,68.02,,False,0.0,未评估（请求失败）
+deepseek-official,code_sort,code_gen,快速排序实现,0,True,,785.82,1372.96,587.15,24,91,154.99,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+deepseek-official,code_sort,code_gen,快速排序实现,1,True,,481.02,1015.14,534.12,24,91,170.37,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+deepseek-official,code_sort,code_gen,快速排序实现,2,True,,845.46,1405.95,560.49,24,91,162.36,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+deepseek-official,code_sort,code_gen,快速排序实现,3,True,,532.73,1080.79,548.06,24,91,166.04,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+deepseek-official,code_sort,code_gen,快速排序实现,4,True,,550.95,1160.36,609.41,24,91,149.33,"```python
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+```",True,1.0,排序正确
+opencode-go,reasoning_transitive,reasoning,传递性推理,0,True,,2693.16,2694.03,0.87,100,70,80165.74,A,True,1.0,命中关键词: A
+opencode-go,reasoning_transitive,reasoning,传递性推理,1,True,,2960.93,2963.47,2.54,100,52,20484.64,A,True,1.0,命中关键词: A
+opencode-go,reasoning_transitive,reasoning,传递性推理,2,True,,2580.69,2581.96,1.27,100,58,45848.1,A,True,1.0,命中关键词: A
+opencode-go,reasoning_transitive,reasoning,传递性推理,3,True,,2576.37,2578.14,1.77,100,35,19823.37,A,True,1.0,命中关键词: A
+opencode-go,reasoning_transitive,reasoning,传递性推理,4,True,,3439.96,3441.65,1.68,100,55,32644.3,A,True,1.0,命中关键词: A
+deepseek-official,reasoning_transitive,reasoning,传递性推理,0,True,,740.41,829.55,89.13,21,1,11.22,A,True,1.0,命中关键词: A
+deepseek-official,reasoning_transitive,reasoning,传递性推理,1,True,,567.75,666.33,98.58,21,1,10.14,A,True,1.0,命中关键词: A
+deepseek-official,reasoning_transitive,reasoning,传递性推理,2,True,,796.44,933.4,136.96,21,1,7.3,A,True,1.0,命中关键词: A
+deepseek-official,reasoning_transitive,reasoning,传递性推理,3,True,,533.58,649.91,116.33,21,1,8.6,A,True,1.0,命中关键词: A
+deepseek-official,reasoning_transitive,reasoning,传递性推理,4,True,,652.19,814.85,162.66,21,1,6.15,A,True,1.0,命中关键词: A
+opencode-go,reasoning_syllogism,reasoning,三段论推理,0,True,,2914.35,2915.83,1.48,106,61,41191.25,是,True,1.0,回答: 是
+opencode-go,reasoning_syllogism,reasoning,三段论推理,1,True,,2769.07,2771.74,2.67,106,67,25102.02,是,True,1.0,回答: 是
+opencode-go,reasoning_syllogism,reasoning,三段论推理,2,True,,4645.26,4646.53,1.27,106,62,48840.32,是,True,1.0,回答: 是
+opencode-go,reasoning_syllogism,reasoning,三段论推理,3,True,,3770.63,3778.42,7.79,106,61,7832.08,是,True,1.0,回答: 是
+opencode-go,reasoning_syllogism,reasoning,三段论推理,4,True,,2693.52,2694.67,1.15,106,75,65489.77,是,True,1.0,回答: 是
+deepseek-official,reasoning_syllogism,reasoning,三段论推理,0,True,,710.69,805.99,95.3,27,1,10.49,是,True,1.0,回答: 是
+deepseek-official,reasoning_syllogism,reasoning,三段论推理,1,True,,570.6,690.21,119.61,27,1,8.36,是,True,1.0,回答: 是
+deepseek-official,reasoning_syllogism,reasoning,三段论推理,2,True,,853.55,952.14,98.59,27,1,10.14,是,True,1.0,回答: 是
+deepseek-official,reasoning_syllogism,reasoning,三段论推理,3,True,,681.42,818.86,137.44,27,1,7.28,是,True,1.0,回答: 是
+deepseek-official,reasoning_syllogism,reasoning,三段论推理,4,True,,722.09,909.14,187.05,27,1,5.35,是,True,1.0,回答: 是
+opencode-go,instruction_json,instruction,JSON格式约束,0,True,,5892.84,5899.39,6.54,108,267,40816.26,"[""西瓜"",""葡萄"",""桃子""]",True,1.0,"3 个字符串元素: ['西瓜', '葡萄', '桃子']"
+opencode-go,instruction_json,instruction,JSON格式约束,1,True,,5009.48,5018.96,9.48,108,167,17622.71,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+opencode-go,instruction_json,instruction,JSON格式约束,2,True,,3687.35,3699.32,11.96,108,158,13206.11,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+opencode-go,instruction_json,instruction,JSON格式约束,3,True,,3305.22,3319.46,14.25,108,143,10037.0,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+opencode-go,instruction_json,instruction,JSON格式约束,4,True,,4555.74,4566.23,10.48,108,245,23374.07,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+deepseek-official,instruction_json,instruction,JSON格式约束,0,True,,501.31,637.54,136.23,29,7,51.38,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+deepseek-official,instruction_json,instruction,JSON格式约束,1,True,,605.89,754.84,148.94,29,7,47.0,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+deepseek-official,instruction_json,instruction,JSON格式约束,2,True,,540.58,701.86,161.27,29,7,43.4,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+deepseek-official,instruction_json,instruction,JSON格式约束,3,True,,606.83,783.34,176.52,29,7,39.66,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+deepseek-official,instruction_json,instruction,JSON格式约束,4,True,,632.72,842.61,209.89,29,7,33.35,"[""苹果"",""香蕉"",""橘子""]",True,1.0,"3 个字符串元素: ['苹果', '香蕉', '橘子']"
+opencode-go,instruction_length,instruction,字数约束,0,True,,0.0,13441.65,13441.65,102,1024,76.18,,False,0.0,未评估（请求失败）
+opencode-go,instruction_length,instruction,字数约束,1,True,,0.0,14297.78,14297.78,102,1024,71.62,,False,0.0,未评估（请求失败）
+opencode-go,instruction_length,instruction,字数约束,2,True,,0.0,12983.62,12983.62,102,1024,78.87,,False,0.0,未评估（请求失败）
+opencode-go,instruction_length,instruction,字数约束,3,True,,0.0,13225.12,13225.12,102,1024,77.43,,False,0.0,未评估（请求失败）
+opencode-go,instruction_length,instruction,字数约束,4,True,,0.0,15850.38,15850.38,102,1024,64.6,,False,0.0,未评估（请求失败）
+deepseek-official,instruction_length,instruction,字数约束,0,True,,678.61,956.39,277.77,23,9,32.4,用逻辑构建世界用代码解决现实问题,False,0.3,字数偏差过大: 16（目标 20，差 4）
+deepseek-official,instruction_length,instruction,字数约束,1,True,,782.29,1149.33,367.03,23,9,24.52,用逻辑构建世界用代码解决现实问题,False,0.3,字数偏差过大: 16（目标 20，差 4）
+deepseek-official,instruction_length,instruction,字数约束,2,True,,644.38,1016.89,372.51,23,9,24.16,用逻辑构建世界用代码解决现实问题,False,0.3,字数偏差过大: 16（目标 20，差 4）
+deepseek-official,instruction_length,instruction,字数约束,3,True,,522.86,822.13,299.27,23,9,30.07,用逻辑构建世界用代码解决现实问题,False,0.3,字数偏差过大: 16（目标 20，差 4）
+deepseek-official,instruction_length,instruction,字数约束,4,True,,745.43,1076.4,330.96,23,9,27.19,用逻辑构建世界用代码解决现实问题,False,0.3,字数偏差过大: 16（目标 20，差 4）
+opencode-go,long_context,long_context,长文本信息检索,0,True,,3078.63,3082.57,3.94,497,76,19308.49,林婉清,True,1.0,命中关键词: 林婉清
+opencode-go,long_context,long_context,长文本信息检索,1,True,,4290.2,4315.62,25.42,497,76,2990.04,林婉清,True,1.0,命中关键词: 林婉清
+opencode-go,long_context,long_context,长文本信息检索,2,True,,3600.33,3604.21,3.88,497,58,14947.1,林婉清,True,1.0,命中关键词: 林婉清
+opencode-go,long_context,long_context,长文本信息检索,3,True,,3726.66,3731.57,4.91,497,51,10385.58,林婉清,True,1.0,命中关键词: 林婉清
+opencode-go,long_context,long_context,长文本信息检索,4,True,,3977.38,3981.92,4.54,497,89,19609.98,林婉清,True,1.0,命中关键词: 林婉清
+deepseek-official,long_context,long_context,长文本信息检索,0,True,,504.48,639.39,134.91,418,3,22.24,林婉清,True,1.0,命中关键词: 林婉清
+deepseek-official,long_context,long_context,长文本信息检索,1,True,,492.23,572.3,80.06,418,3,37.47,林婉清,True,1.0,命中关键词: 林婉清
+deepseek-official,long_context,long_context,长文本信息检索,2,True,,545.4,721.88,176.48,418,3,17.0,林婉清,True,1.0,命中关键词: 林婉清
+deepseek-official,long_context,long_context,长文本信息检索,3,True,,556.11,684.48,128.36,418,3,23.37,林婉清,True,1.0,命中关键词: 林婉清
+deepseek-official,long_context,long_context,长文本信息检索,4,True,,771.23,928.11,156.88,418,3,19.12,林婉清,True,1.0,命中关键词: 林婉清
+opencode-go,code_fizzbuzz,code_gen,FizzBuzz实现,0,True,,4473.61,4970.98,497.37,110,337,677.57,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+opencode-go,code_fizzbuzz,code_gen,FizzBuzz实现,1,True,,9958.03,10244.87,286.84,110,259,902.95,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+opencode-go,code_fizzbuzz,code_gen,FizzBuzz实现,2,True,,5551.24,6018.62,467.38,110,411,879.36,"```python
+def fizzbuzz(n):
+    for i in range(1, n+1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+opencode-go,code_fizzbuzz,code_gen,FizzBuzz实现,3,True,,9757.66,10369.57,611.91,110,657,1073.69,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+opencode-go,code_fizzbuzz,code_gen,FizzBuzz实现,4,True,,4449.09,5021.47,572.38,110,244,426.29,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+deepseek-official,code_fizzbuzz,code_gen,FizzBuzz实现,0,True,,543.77,1119.81,576.04,31,87,151.03,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+deepseek-official,code_fizzbuzz,code_gen,FizzBuzz实现,1,True,,740.35,1319.62,579.27,31,87,150.19,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+deepseek-official,code_fizzbuzz,code_gen,FizzBuzz实现,2,True,,652.21,1715.36,1063.14,31,87,81.83,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+deepseek-official,code_fizzbuzz,code_gen,FizzBuzz实现,3,True,,803.6,1362.29,558.69,31,87,155.72,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确
+deepseek-official,code_fizzbuzz,code_gen,FizzBuzz实现,4,True,,702.95,1271.95,569.01,31,87,152.9,"```python
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 3 == 0 and i % 5 == 0:
+            print(""FizzBuzz"")
+        elif i % 3 == 0:
+            print(""Fizz"")
+        elif i % 5 == 0:
+            print(""Buzz"")
+        else:
+            print(i)
+```",True,1.0,FizzBuzz 输出完全正确

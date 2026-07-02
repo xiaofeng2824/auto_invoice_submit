@@ -1,3 +1,4 @@
 pymupdf>=1.24.0
 playwright>=1.44.0
 pyyaml>=6.0.0
+PySide6>=6.7.0
